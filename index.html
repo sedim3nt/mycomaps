@@ -1,468 +1,898 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MycoMaps — Find Functional Mushroom Retailers Near You</title>
-  <meta name="description" content="Discover functional mushroom retailers, brands, and products. Lion's Mane, Reishi, Chaga, Turkey Tail, Cordyceps — find the best stores near you.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRSL4RD2DY"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-YRSL4RD2DY');</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MycoMaps — Functional Mushroom Intelligence Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #0a0a0c;
-      --card: #111114;
-      --border: #1e1e2e;
-      --text: #e4e4e7;
-      --muted: #71717a;
-      --accent: #8b5cf6;
-      --accent2: #a78bfa;
-      --warm: #f59e0b;
-      --emerald: #00ff88;
+      --bg-card: #111114;
+      --bg-card-hover: #16161a;
+      --bg-input: #0f0f12;
+      --border: #1e1e24;
+      --border-hover: #2a2a34;
+      --brown: #8B6914;
+      --brown-light: #b08a28;
+      --green: #2D5016;
+      --green-light: #3d6b1e;
+      --green-bright: #4a8024;
+      --cream: #F5F0E8;
+      --cream-muted: #b8b0a0;
+      --text: #e8e4dc;
+      --text-muted: #7a7570;
+      --text-dim: #4a4640;
+      --active: #4a8024;
+      --active-bg: rgba(74, 128, 36, 0.15);
+      --pending: #8B6914;
+      --pending-bg: rgba(139, 105, 20, 0.15);
       --radius: 8px;
+      --radius-sm: 4px;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    /* Nav */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-      border-bottom: 1px solid var(--border);
-    }
-    .logo {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent), var(--warm));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .logo span { font-weight: 400; opacity: 0.7; }
-    nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.2s;
-    }
-    nav a:hover { color: var(--text); }
-
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 80px 24px 60px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 56px);
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 20px;
-    }
-    .hero h1 .accent { color: var(--accent); }
-    .hero h1 .warm { color: var(--warm); }
-    .hero p {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 600px;
-      margin: 0 auto 32px;
-    }
-
-    /* Search */
-    .search-container {
-      max-width: 600px;
-      margin: 0 auto 16px;
-      position: relative;
-    }
-    .search-container input {
-      width: 100%;
-      padding: 16px 20px 16px 48px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .search-container input:focus {
-      border-color: var(--accent);
-    }
-    .search-container input::placeholder { color: var(--muted); }
-    .search-icon {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 20px;
-    }
-    .search-filters {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 40px;
-    }
-    .filter-tag {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .filter-tag:hover, .filter-tag.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(139, 92, 246, 0.1);
-    }
-
-    /* Species Grid */
-    .section { padding: 60px 24px; max-width: 1200px; margin: 0 auto; }
-    .section-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .section-sub {
-      color: var(--muted);
-      margin-bottom: 32px;
+      font-family: 'Inter', system-ui, sans-serif;
       font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
-    .species-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
+
+    a { color: var(--brown-light); text-decoration: none; }
+    a:hover { color: var(--cream); text-decoration: underline; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,12,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
     }
-    .species-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: all 0.2s;
-      cursor: pointer;
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--cream);
       text-decoration: none;
-      color: inherit;
     }
-    .species-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
+    .nav-logo .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--green) 0%, var(--brown) 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
     }
-    .species-emoji { font-size: 36px; margin-bottom: 12px; }
-    .species-name {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .species-latin {
-      font-size: 13px;
-      font-style: italic;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .species-benefits {
-      font-size: 13px;
-      color: var(--accent2);
-    }
-
-    /* Stats */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      padding: 40px 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      text-align: center;
-    }
-    .stat-number {
-      font-size: 36px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent), var(--emerald));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .stat-label { color: var(--muted); font-size: 14px; margin-top: 4px; }
-
-    /* How it works */
-    .how-it-works {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    .nav-links {
+      display: flex;
       gap: 24px;
     }
-    .step {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.15s;
     }
-    .step-number {
-      font-size: 48px;
-      font-weight: 800;
-      color: var(--accent);
-      opacity: 0.3;
-      line-height: 1;
-      margin-bottom: 12px;
-    }
-    .step h3 { font-size: 18px; margin-bottom: 8px; }
-    .step p { color: var(--muted); font-size: 14px; }
+    .nav-links a:hover { color: var(--cream); text-decoration: none; }
 
-    /* CTA */
-    .cta-section {
+    /* ── HERO ── */
+    .hero {
+      padding: 80px 24px 72px;
       text-align: center;
-      padding: 80px 24px;
-      max-width: 600px;
+      max-width: 720px;
       margin: 0 auto;
     }
-    .cta-section h2 {
-      font-size: 32px;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--active-bg);
+      border: 1px solid rgba(74,128,36,0.3);
+      color: var(--green-bright);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 52px);
       font-weight: 700;
+      line-height: 1.15;
+      color: var(--cream);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--brown-light), var(--green-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--cream-muted);
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat .num {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--cream);
+    }
+    .hero-stat .label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SECTION LAYOUT ── */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-header {
+      margin-bottom: 40px;
+    }
+    .section-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brown-light);
+      margin-bottom: 8px;
+    }
+    .section-header h2 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ── DECRIM MAP ── */
+    .group-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .group-block { margin-bottom: 40px; }
+    .decrim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .decrim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: border-color 0.15s, background 0.15s;
+      cursor: default;
+    }
+    .decrim-card:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+    }
+    .decrim-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .decrim-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--cream);
+    }
+    .decrim-state-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--border);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .status-badge.active {
+      background: var(--active-bg);
+      color: var(--active);
+      border: 1px solid rgba(74,128,36,0.25);
+    }
+    .status-badge.active::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--active);
+    }
+    .status-badge.pending {
+      background: var(--pending-bg);
+      color: var(--pending);
+      border: 1px solid rgba(139,105,20,0.25);
+    }
+    .decrim-measure {
+      font-size: 12px;
+      color: var(--brown-light);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .decrim-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .decrim-notes {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── DIRECTORY FILTERS ── */
+    .filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+      position: relative;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 9px 12px 9px 36px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input::placeholder { color: var(--text-dim); }
+    .search-input:focus { border-color: var(--brown); }
+
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .filter-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+    .filter-btn.active {
+      background: var(--active-bg);
+      border-color: rgba(74,128,36,0.4);
+      color: var(--green-bright);
+    }
+
+    select.filter-select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 32px 7px 14px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a4640' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    select.filter-select:focus { border-color: var(--brown); color: var(--text); }
+
+    .results-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .results-count span { color: var(--cream); font-weight: 600; }
+
+    /* ── BUSINESS GRID ── */
+    .biz-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .biz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+      position: relative;
+    }
+    .biz-card:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    .biz-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .biz-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--cream);
+      line-height: 1.3;
+    }
+    .online-badge {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 7px;
+      border-radius: 4px;
+      background: var(--active-bg);
+      color: var(--active);
+      border: 1px solid rgba(74,128,36,0.25);
+    }
+    .biz-location {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .biz-location svg { flex-shrink: 0; }
+    .biz-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: capitalize;
+    }
+    .tag-medicinal  { background: rgba(139,105,20,0.18); color: #c49a2e; border: 1px solid rgba(139,105,20,0.25); }
+    .tag-functional { background: rgba(74,128,36,0.15); color: #5fa32d; border: 1px solid rgba(74,128,36,0.22); }
+    .tag-gourmet    { background: rgba(180,100,50,0.15); color: #c06c3a; border: 1px solid rgba(180,100,50,0.22); }
+    .tag-grow_kits  { background: rgba(60,100,150,0.15); color: #5a8fc0; border: 1px solid rgba(60,100,150,0.22); }
+    .tag-psychedelic{ background: rgba(120,60,160,0.15); color: #a060c8; border: 1px solid rgba(120,60,160,0.22); }
+    .biz-footer {
+      margin-top: auto;
+    }
+    .biz-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--brown-light);
+      transition: color 0.15s;
+    }
+    .biz-link:hover { color: var(--cream); text-decoration: none; }
+    .biz-link svg { flex-shrink: 0; }
+
+    .no-results {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    .no-results strong { color: var(--cream-muted); display: block; font-size: 18px; margin-bottom: 8px; }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      background: linear-gradient(135deg, rgba(45,80,22,0.3) 0%, rgba(139,105,20,0.2) 100%);
+      border: 1px solid rgba(74,128,36,0.2);
+      border-radius: 12px;
+      padding: 56px 40px;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto 64px;
+    }
+    .cta-section .cta-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .cta-section h2 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .cta-section .price-pill {
+      display: inline-block;
+      background: var(--brown);
+      color: var(--cream);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
       margin-bottom: 16px;
     }
     .cta-section p {
-      color: var(--muted);
-      margin-bottom: 32px;
+      color: var(--cream-muted);
+      font-size: 15px;
+      max-width: 480px;
+      margin: 0 auto 28px;
     }
-    .btn-primary {
-      display: inline-block;
-      padding: 14px 32px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: var(--radius);
-      text-decoration: none;
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--green) 0%, var(--brown) 100%);
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 15px;
       font-weight: 600;
-      font-size: 16px;
-      transition: all 0.2s;
+      padding: 13px 28px;
+      border-radius: var(--radius);
       border: none;
       cursor: pointer;
-    }
-    .btn-primary:hover {
-      background: var(--accent2);
-      transform: translateY(-1px);
-    }
-    .btn-secondary {
-      display: inline-block;
-      padding: 14px 32px;
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
       text-decoration: none;
-      font-weight: 500;
-      font-size: 16px;
-      transition: all 0.2s;
-      margin-left: 12px;
+      transition: opacity 0.15s, transform 0.15s;
     }
-    .btn-secondary:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* Waitlist */
-    .waitlist-form {
+    .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); text-decoration: none; color: var(--cream); }
+    .cta-perks {
       display: flex;
-      gap: 8px;
-      max-width: 460px;
-      margin: 0 auto;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 28px;
+      flex-wrap: wrap;
     }
-    .waitlist-form input {
-      flex: 1;
-      padding: 14px 16px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
+    .cta-perk {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--text-muted);
     }
-    .waitlist-form input:focus { border-color: var(--accent); }
+    .cta-perk::before {
+      content: '✓';
+      color: var(--active);
+      font-weight: 700;
+    }
 
-    /* Footer */
+    /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 32px 24px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
+      padding: 40px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
     }
-    footer a { color: var(--accent2); text-decoration: none; }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer-brand .logo-icon {
+      width: 26px;
+      height: 26px;
+      background: linear-gradient(135deg, var(--green) 0%, var(--brown) 100%);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .footer-brand .brand-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--cream);
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--cream); text-decoration: none; }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-dim);
+      width: 100%;
+    }
 
-    /* Responsive */
+    /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      .hero { padding: 48px 20px 40px; }
-      .species-grid { grid-template-columns: 1fr; }
-      .waitlist-form { flex-direction: column; }
-      .btn-secondary { margin-left: 0; margin-top: 8px; }
+      .hero { padding: 56px 16px 48px; }
+      section { padding: 48px 16px; }
+      .hero-stats { gap: 28px; }
+      .cta-section { padding: 40px 20px; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .nav-links { display: none; }
+      .filters-bar { gap: 8px; }
+      .search-wrap { max-width: 100%; width: 100%; }
     }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <div class="logo">Shroom<span>Maps</span></div>
-  <div style="display:flex;gap:20px;align-items:center;">
-    <a href="#species">Species</a>
-    <a href="#retailers">Retailers</a>
-    <a href="#about">About</a>
-    <a href="https://spirittree.dev" target="_blank">SpiritTree</a>
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">🍄</div>
+    MycoMaps
+  </a>
+  <div class="nav-links">
+    <a href="#decrim">Decrim Map</a>
+    <a href="#directory">Directory</a>
+    <a href="#list-business">List Business</a>
   </div>
 </nav>
 
-<section class="hero">
-  <h1>Find <span class="accent">Functional Mushroom</span> Intelligence <span class="warm">Near You</span></h1>
-  <p>Discover stores, brands, and products for Lion's Mane, Reishi, Chaga, Turkey Tail, Cordyceps, and more. The first marketplace for the functional mushroom economy.</p>
-  
-  <div class="search-container">
-    <span class="search-icon">🔍</span>
-    <input type="text" placeholder="Search by city, species, or brand..." id="search">
-  </div>
-  <div class="search-filters">
-    <button class="filter-tag active">All</button>
-    <button class="filter-tag">Lion's Mane</button>
-    <button class="filter-tag">Reishi</button>
-    <button class="filter-tag">Chaga</button>
-    <button class="filter-tag">Turkey Tail</button>
-    <button class="filter-tag">Cordyceps</button>
-    <button class="filter-tag">Maitake</button>
-  </div>
-</section>
-
-<div class="stats">
-  <div class="stat-card">
-    <div class="stat-number">$1.8B+</div>
-    <div class="stat-label">Functional Mushroom Market (2026)</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-number">843+</div>
-    <div class="stat-label">Stores Nationwide</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-number">200+</div>
-    <div class="stat-label">Brands & Products</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-number">7</div>
-    <div class="stat-label">Key Species Tracked</div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🗺️ Living Directory · Updated 2025</div>
+  <h1>Find <span>Functional Mushroom</span> Intelligence Near You</h1>
+  <p>The most comprehensive directory of functional mushroom businesses, psilocybin service centers, and decriminalization jurisdictions across North America.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">50</div>
+      <div class="label">Businesses</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">20</div>
+      <div class="label">Jurisdictions</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">2</div>
+      <div class="label">Licensed States</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">11</div>
+      <div class="label">States Covered</div>
+    </div>
   </div>
 </div>
 
-<section class="section" id="species">
-  <h2 class="section-title">Popular Species</h2>
-  <p class="section-sub">Tap any species to find retailers, products, and research near you.</p>
-  <div class="species-grid">
-    <a class="species-card" href="#lions-mane">
-      <div class="species-emoji">🦁</div>
-      <div class="species-name">Lion's Mane</div>
-      <div class="species-latin">Hericium erinaceus</div>
-      <div class="species-benefits">Cognition · Nerve growth · Focus</div>
-    </a>
-    <a class="species-card" href="#reishi">
-      <div class="species-emoji">🍄</div>
-      <div class="species-name">Reishi</div>
-      <div class="species-latin">Ganoderma lucidum</div>
-      <div class="species-benefits">Immune · Sleep · Stress</div>
-    </a>
-    <a class="species-card" href="#chaga">
-      <div class="species-emoji">🪨</div>
-      <div class="species-name">Chaga</div>
-      <div class="species-latin">Inonotus obliquus</div>
-      <div class="species-benefits">Antioxidant · Immune · Energy</div>
-    </a>
-    <a class="species-card" href="#turkey-tail">
-      <div class="species-emoji">🦃</div>
-      <div class="species-name">Turkey Tail</div>
-      <div class="species-latin">Trametes versicolor</div>
-      <div class="species-benefits">Immune · Gut health · Recovery</div>
-    </a>
-    <a class="species-card" href="#cordyceps">
-      <div class="species-emoji">⚡</div>
-      <div class="species-name">Cordyceps</div>
-      <div class="species-latin">Cordyceps militaris</div>
-      <div class="species-benefits">Energy · Athletic · Endurance</div>
-    </a>
-    <a class="species-card" href="#maitake">
-      <div class="species-emoji">💃</div>
-      <div class="species-name">Maitake</div>
-      <div class="species-latin">Grifola frondosa</div>
-      <div class="species-benefits">Blood sugar · Immune · Adaptogen</div>
-    </a>
-    <a class="species-card" href="#shiitake">
-      <div class="species-emoji">🌿</div>
-      <div class="species-name">Shiitake</div>
-      <div class="species-latin">Lentinula edodes</div>
-      <div class="species-benefits">Heart · Immune · Nutrition</div>
-    </a>
-    <a class="species-card" href="#tremella">
-      <div class="species-emoji">✨</div>
-      <div class="species-name">Tremella</div>
-      <div class="species-latin">Tremella fuciformis</div>
-      <div class="species-benefits">Skin · Hydration · Anti-aging</div>
-    </a>
+<hr class="divider" />
+
+<!-- DECRIM MAP -->
+<section id="decrim">
+  <div class="section-header">
+    <div class="section-tag">🏛️ Policy Landscape</div>
+    <h2>Decriminalization &amp; Legalization Map</h2>
+    <p>20 jurisdictions where psilocybin and entheogenic plants have been decriminalized, deprioritized, or regulated for therapeutic use.</p>
   </div>
+  <div id="decrim-container"></div>
 </section>
 
-<section class="section" id="retailers">
-  <h2 class="section-title">Coming Soon: Retailer Directory</h2>
-  <p class="section-sub">We're building the most comprehensive functional mushroom retailer database. Stores, brands, products, reviews — all in one place.</p>
-  <div class="how-it-works">
-    <div class="step">
-      <div class="step-number">1</div>
-      <h3>Search</h3>
-      <p>Find functional mushroom retailers by location, species, product type, or brand. Filter by organic, dual-extract, fruiting body, and more.</p>
-    </div>
-    <div class="step">
-      <div class="step-number">2</div>
-      <h3>Compare</h3>
-      <p>See product details, pricing, extraction methods, and third-party lab results side by side. Know what you're buying.</p>
-    </div>
-    <div class="step">
-      <div class="step-number">3</div>
-      <h3>Connect</h3>
-      <p>Support local retailers, discover new brands, and join a community of functional mushroom enthusiasts.</p>
-    </div>
+<hr class="divider" />
+
+<!-- BUSINESS DIRECTORY -->
+<section id="directory">
+  <div class="section-header">
+    <div class="section-tag">🧭 Business Directory</div>
+    <h2>Mushroom Businesses &amp; Service Centers</h2>
+    <p>Vetted functional mushroom, gourmet, cultivation, and psilocybin service businesses across North America.</p>
   </div>
+
+  <div class="filters-bar">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="search" placeholder="Search businesses…" />
+    </div>
+    <div class="filter-group" id="cat-filters">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="functional">Functional &amp; Medicinal</button>
+      <button class="filter-btn" data-cat="gourmet">Gourmet</button>
+      <button class="filter-btn" data-cat="grow_kits">Grow Kits</button>
+      <button class="filter-btn" data-cat="psychedelic">Psilocybin Services</button>
+    </div>
+    <select class="filter-select" id="state-filter">
+      <option value="all">All Regions</option>
+    </select>
+  </div>
+
+  <div class="results-count" id="results-count"></div>
+  <div class="biz-grid" id="biz-grid"></div>
 </section>
 
-<section class="cta-section" id="about">
-  <h2>Be the First to Know</h2>
-  <p>MycoMaps launches soon. Join the waitlist and we'll notify you when retailers in your area are listed.</p>
-  <div class="waitlist-form">
-    <input type="email" placeholder="your@email.com" id="waitlist-email">
-    <button class="btn-primary" onclick="alert('Thanks! We\'ll be in touch.')">Join Waitlist</button>
-  </div>
-  <p style="margin-top: 24px; font-size: 13px; color: var(--muted);">
-    Are you a retailer or brand? <a href="mailto:terraloam.eye@gmail.com" style="color: var(--accent2); text-decoration: underline;">List your store for free →</a>
-  </p>
-</section>
+<hr class="divider" />
 
+<!-- CTA: LIST YOUR BUSINESS -->
+<div class="cta-section" id="list-business">
+  <div class="cta-icon">🌱</div>
+  <h2>List Your Business</h2>
+  <div class="price-pill">Coming soon · $299/year featured listing</div>
+  <p>Get discovered by thousands of people searching for mushroom products, services, and cultivation supplies near them.</p>
+  <a href="mailto:terraloam.eye@gmail.com?subject=MycoMaps%20Listing" class="cta-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    Request a Listing
+  </a>
+  <div class="cta-perks">
+    <div class="cta-perk">Featured placement in search results</div>
+    <div class="cta-perk">Category &amp; location tagging</div>
+    <div class="cta-perk">Direct link to your website</div>
+    <div class="cta-perk">Online ordering badge</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
 <footer>
-  <p>MycoMaps is a <a href="https://spirittree.dev">SpiritTree</a> project · Built with care in Boulder, CO</p>
-  <p style="margin-top: 8px;">© 2026 Nrvana LLC. All rights reserved.</p>
+  <div class="footer-brand">
+    <div class="logo-icon">🍄</div>
+    <div class="brand-name">MycoMaps</div>
+  </div>
+  <div class="footer-links">
+    <a href="https://spirittree.dev" target="_blank" rel="noopener">spirittree.dev</a>
+    <a href="https://marketplace.spirittree.dev" target="_blank" rel="noopener">marketplace.spirittree.dev</a>
+    <a href="mailto:terraloam.eye@gmail.com?subject=MycoMaps%20Listing">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 MycoMaps · Part of the SpiritTree network · Data current as of March 2025</div>
 </footer>
 
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const BUSINESSES = [{"id":"biz-001","name":"Host Defense / Fungi Perfecti","location":{"city":"Olympia","state":"WA"},"website":"https://hostdefense.com","categories":["medicinal","functional","grow_kits"],"online_ordering":true,"description":"Founded by renowned mycologist Paul Stamets. Produces certified organic mushroom supplements including lion's mane, reishi, chaga, turkey tail, and cordyceps."},{"id":"biz-002","name":"Real Mushrooms","location":{"city":"Vancouver","state":"BC (ships US)"},"website":"https://realmushrooms.com","categories":["medicinal","functional"],"online_ordering":true,"description":"Winner of ConsumerLab's Best Mushroom Supplement Company 4 years running (2022–2025). Uses only fruiting bodies (not mycelium on grain)."},{"id":"biz-003","name":"North Spore","location":{"city":"Portland","state":"ME"},"website":"https://northspore.com","categories":["grow_kits","gourmet","medicinal"],"online_ordering":true,"description":"One of the top mushroom cultivation supply companies in the US. Offers a wide variety of grow kits, spawn, substrates, and supplies for all skill levels."},{"id":"biz-004","name":"Midwest Grow Kits","location":{"city":"Chicago","state":"IL"},"website":"https://midwestgrowkits.com","categories":["grow_kits"],"online_ordering":true,"description":"Over 13 years in business. Complete mushroom cultivation kits, spawn, substrates, and equipment for all skill levels."},{"id":"biz-005","name":"Four Sigmatic","location":{"city":"Los Angeles","state":"CA"},"website":"https://us.foursigmatic.com","categories":["functional","medicinal"],"online_ordering":true,"description":"Popular mushroom coffee and supplement brand featuring lion's mane, chaga, reishi, and cordyceps blended into coffee, elixirs, and protein powders."},{"id":"biz-006","name":"Om Mushrooms","location":{"city":"Carlsbad","state":"CA"},"website":"https://ommushrooms.com","categories":["functional","medicinal"],"online_ordering":true,"description":"Certified organic mushroom supplement company. Grows their own mushrooms in Carlsbad, CA. USDA Organic certified."},{"id":"biz-007","name":"MUD\\WTR","location":{"city":"Los Angeles","state":"CA"},"website":"https://mudwtr.com","categories":["functional"],"online_ordering":true,"description":"Low-caffeine mushroom coffee alternative with lion's mane, chaga, reishi, and cordyceps."},{"id":"biz-008","name":"Ryze Superfoods","location":{"city":"New York","state":"NY"},"website":"https://helloryze.com","categories":["functional"],"online_ordering":true,"description":"Mushroom coffee blend with cordyceps, lion's mane, reishi, shiitake, turkey tail, and king trumpet."},{"id":"biz-009","name":"Laird Superfood","location":{"city":"Sisters","state":"OR"},"website":"https://lairdsuperfood.com","categories":["functional"],"online_ordering":true,"description":"Founded by big-wave surfer Laird Hamilton. Coffee infused with chaga, lion's mane, maitake, and cordyceps mushroom extracts."},{"id":"biz-010","name":"Far West Fungi","location":{"city":"San Francisco","state":"CA"},"website":"https://farwestfungi.com","categories":["gourmet","medicinal","grow_kits"],"online_ordering":true,"description":"Bay Area institution. Retail locations in SF's Ferry Building. Sells fresh and dried specialty mushrooms, extracts, jerky, and cultivation supplies."},{"id":"biz-011","name":"Smallhold","location":{"city":"Brooklyn","state":"NY"},"website":"https://smallhold.com","categories":["gourmet"],"online_ordering":true,"description":"Organic mushroom farm with locations in Brooklyn and Southern California. Supplies grocery stores across the US."},{"id":"biz-012","name":"Cascadia Mushrooms","location":{"city":"Bellingham","state":"WA"},"website":"https://cascadiamushrooms.com","categories":["gourmet","grow_kits"],"online_ordering":true,"description":"100% Certified Organic mushroom farm. Offers certified organic grow kits and ships express nationwide."},{"id":"biz-013","name":"Mycopia Mushrooms","location":{"city":"Sebastopol","state":"CA"},"website":"https://mycopia.com","categories":["gourmet"],"online_ordering":true,"description":"Fresh gourmet mushroom supplier distributing through Safeway, Whole Foods, and other major chains nationwide."},{"id":"biz-014","name":"D'Artagnan Foods","location":{"city":"Newark","state":"NJ"},"website":"https://dartagnan.com","categories":["gourmet"],"online_ordering":true,"description":"Premium specialty food company selling fresh, cultivated, and wild-foraged mushrooms with nationwide delivery."},{"id":"biz-015","name":"Fungi Ally","location":{"city":"Hadley","state":"MA"},"website":"https://fungially.com","categories":["gourmet","grow_kits"],"online_ordering":true,"description":"Organic mushroom farm in Massachusetts. Grow kits produce 3–5 pounds from 10-pound kits. Ships nationwide."},{"id":"biz-016","name":"Back to the Roots","location":{"city":"Oakland","state":"CA"},"website":"https://backtotheroots.com","categories":["grow_kits"],"online_ordering":true,"description":"Organic mushroom grow kits that produce results in 10 days. Available at Target, Walmart, Home Depot, and online."},{"id":"biz-017","name":"Field & Forest Products","location":{"city":"Peshtigo","state":"WI"},"website":"https://fieldforest.net","categories":["grow_kits","gourmet"],"online_ordering":true,"description":"Wisconsin-based mushroom cultivation supply company with pre-inoculated hardwood sawdust blocks, spawn, and supplies."},{"id":"biz-018","name":"Henosis Mushrooms","location":{"city":"Nashville","state":"TN"},"website":"https://henosismushrooms.com","categories":["gourmet","medicinal","grow_kits"],"online_ordering":true,"description":"Nashville-based mushroom company offering fresh gourmet mushrooms, medicinal extracts, mushroom jerky, and grow kits."},{"id":"biz-019","name":"Monster Mushroom Company","location":{"city":"Denver","state":"CO"},"website":"https://monstermushroom.co","categories":["grow_kits"],"online_ordering":true,"description":"Denver-based company specializing in all-in-one mushroom grow bags for home cultivation. Ships nationwide."},{"id":"biz-020","name":"Irie Farms","location":{"city":"Gresham","state":"OR"},"website":"https://iriefarms.com","categories":["gourmet"],"online_ordering":true,"description":"Oregon organic mushroom farm. Varieties include yellow oyster, blue oyster, lion's mane, and shiitake."},{"id":"biz-021","name":"RR Cultivation","location":{"city":"Online","state":"US"},"website":"https://rrcultivation.com","categories":["gourmet","grow_kits"],"online_ordering":true,"description":"Gourmet mushroom cultivation company offering shiitake, lion's mane, and pioppino mushrooms with nationwide shipping."},{"id":"biz-022","name":"Northwood Mushrooms","location":{"city":"Hayward","state":"WI"},"website":"https://northwoodmushrooms.com","categories":["gourmet"],"online_ordering":true,"description":"Organic shiitake and specialty mushroom farm in Wisconsin. Available at local farmers markets and CSAs."},{"id":"biz-023","name":"EPIC Healing Eugene","location":{"city":"Eugene","state":"OR"},"website":"https://epichealingeugene.com","categories":["psychedelic"],"online_ordering":false,"description":"Oregon's first licensed psilocybin service center, opened May 2023 under Measure 109. Supervised sessions for adults 21+."},{"id":"biz-024","name":"Omnia Group Ashland","location":{"city":"Ashland","state":"OR"},"website":"https://omniagroup.us","categories":["psychedelic"],"online_ordering":false,"description":"Licensed psilocybin service center in Ashland, OR under Measure 109. Sessions typically $750–$1,200."},{"id":"biz-025","name":"Space Psychedelic Clinic","location":{"city":"Portland","state":"OR"},"website":"https://spacepsychedelicclinic.com","categories":["psychedelic"],"online_ordering":false,"description":"Licensed Oregon psilocybin service center in Portland under Measure 109. Supervised sessions for adults 21+."},{"id":"biz-026","name":"Chariot Psilocybin Center","location":{"city":"Portland","state":"OR"},"website":"https://chariotpdx.com","categories":["psychedelic"],"online_ordering":false,"description":"Licensed psilocybin service center in Portland, OR and Boulder, CO. Sessions $1,500–$3,000."},{"id":"biz-027","name":"Ripple Journeywork","location":{"city":"Eugene","state":"OR"},"website":"https://ripplejourneywork.com","categories":["psychedelic"],"online_ordering":false,"description":"Licensed Oregon psilocybin service center in Eugene with preparation, administration, and integration services."},{"id":"biz-028","name":"The Center Origin","location":{"city":"Denver","state":"CO"},"website":"https://thecenterorigin.com","categories":["psychedelic"],"online_ordering":false,"description":"Colorado's first licensed psilocybin healing center (first license March 2025, Prop 122). Located at 1440 Blake St, LoDo Denver."},{"id":"biz-029","name":"Emergence Psychedelic Therapy","location":{"city":"Boulder","state":"CO"},"website":"https://emergencepsychedelictherapy.com","categories":["psychedelic"],"online_ordering":false,"description":"Licensed micro-healing center in Boulder, CO under Prop 122. Guided psilocybin journeys with licensed facilitators."},{"id":"biz-030","name":"Happy Rebel Healing","location":{"city":"Boulder","state":"CO"},"website":"https://happyrebelhealing.com","categories":["psychedelic"],"online_ordering":false,"description":"Licensed psilocybin healing center in Boulder, Colorado under Prop 122. Sessions approximately $2,800."},{"id":"biz-031","name":"Psychedelic Growth","location":{"city":"Boulder","state":"CO"},"website":"https://psychedelicgrowth.co","categories":["psychedelic"],"online_ordering":false,"description":"Licensed psilocybin healing center in Boulder, Colorado. Sessions approximately $3,000 under Colorado's Prop 122."},{"id":"biz-032","name":"ETC Hospitality Center","location":{"city":"Golden","state":"CO"},"website":"https://etchospitality.com","categories":["psychedelic"],"online_ordering":false,"description":"Licensed micro-healing center in Golden, Colorado under Prop 122. Supervised psilocybin sessions for adults 21+."},{"id":"biz-033","name":"SANCTUM","location":{"city":"Aspen","state":"CO"},"website":"https://sanctumaspen.com","categories":["psychedelic"],"online_ordering":false,"description":"Standard-licensed psilocybin healing center in Aspen, Colorado under Prop 122. Guided therapeutic sessions for adults 21+."},{"id":"biz-034","name":"Mushroom Revival","location":{"city":"Tucson","state":"AZ"},"website":"https://mushroomrevival.com","categories":["medicinal","functional"],"online_ordering":true,"description":"Functional mushroom supplement company specializing in adaptogenic blends. Podcast-driven brand with strong educational content."},{"id":"biz-035","name":"Aloha Medicinals","location":{"city":"Carson City","state":"NV"},"website":"https://alohamedicinals.com","categories":["medicinal","functional"],"online_ordering":true,"description":"Certified organic mushroom supplement producer. One of the few US companies certified by the Chinese government for export."},{"id":"biz-036","name":"Harmonic Arts","location":{"city":"Courtenay","state":"BC (ships US)"},"website":"https://harmonicarts.ca","categories":["medicinal","functional"],"online_ordering":true,"description":"Canadian botanical company. Concentrated mushroom tinctures, extracts, and powders including chaga, reishi, turkey tail."},{"id":"biz-037","name":"Nammex","location":{"city":"Gibsons","state":"BC (US distributor)"},"website":"https://nammex.com","categories":["medicinal"],"online_ordering":true,"description":"Bulk organic mushroom extract supplier and one of the most reputable wholesale sources in North America."},{"id":"biz-038","name":"Spore Works","location":{"city":"Knoxville","state":"TN"},"website":"https://sporeworks.com","categories":["grow_kits"],"online_ordering":true,"description":"Established spore and cultivation supply company. Mushroom spore syringes, prints, and growing supplies."},{"id":"biz-039","name":"Sporeworks","location":{"city":"Montana City","state":"MT"},"website":"https://sporeworks.com","categories":["grow_kits"],"online_ordering":true,"description":"Long-established mushroom spore and cultivation supplies company. Gourmet species spore syringes and prints."},{"id":"biz-040","name":"Shroomery","location":{"city":"Online","state":"US"},"website":"https://shroomery.org","categories":["grow_kits"],"online_ordering":false,"description":"Largest online community for mushroom cultivation and mycology. Extensive cultivation guides and community forums."},{"id":"biz-041","name":"Mushroom Harvest","location":{"city":"Athens","state":"OH"},"website":"https://mushroomharvest.com","categories":["grow_kits","gourmet"],"online_ordering":true,"description":"Mushroom cultivation supply company offering spawn, substrates, grow kits, and equipment. Ships nationwide."},{"id":"biz-042","name":"Freshcap Mushrooms","location":{"city":"Online","state":"CA"},"website":"https://freshcap.com","categories":["medicinal","functional","grow_kits"],"online_ordering":true,"description":"Mushroom supplement and cultivation brand with strong YouTube educational content. Products include Thrive 6 blend."},{"id":"biz-043","name":"Oregon Mushrooms","location":{"city":"Portland","state":"OR"},"website":"https://oregonmushrooms.com","categories":["gourmet"],"online_ordering":true,"description":"Portland-based wild and cultivated mushroom supplier. Fresh and dried specialty mushrooms shipped nationwide."},{"id":"biz-044","name":"Gourmet Mushrooms Inc.","location":{"city":"Sebastopol","state":"CA"},"website":"https://gourmetmushrooms.com","categories":["gourmet"],"online_ordering":true,"description":"One of the pioneering American specialty mushroom cultivation companies. Grows maitake, trumpet royale, and other gourmet varieties."},{"id":"biz-045","name":"Stamets 7 / Paul Stamets Foundation","location":{"city":"Shelton","state":"WA"},"website":"https://fungi.com","categories":["medicinal","functional"],"online_ordering":true,"description":"Paul Stamets' personal brand. Fungi.com is the educational hub and storefront for books, supplements, and mushroom products."},{"id":"biz-046","name":"Nutraceutix / Northwest Mycological","location":{"city":"Redmond","state":"WA"},"website":"https://nwmushrooms.com","categories":["gourmet","medicinal"],"online_ordering":true,"description":"Pacific Northwest mushroom supplier offering fresh gourmet and medicinal mushrooms for restaurants and consumers."},{"id":"biz-047","name":"Chestnut Farm","location":{"city":"Hardwick","state":"MA"},"website":"https://chestnutfarm.org","categories":["gourmet"],"online_ordering":false,"description":"Massachusetts-based farm growing organic gourmet mushrooms including shiitake, oyster, and lion's mane."},{"id":"biz-048","name":"Mycological Natural Products","location":{"city":"Hampshire","state":"IL"},"website":"https://mycologicalnp.com","categories":["medicinal","grow_kits"],"online_ordering":true,"description":"Wholesale and retail supplier of medicinal mushroom products and cultivation supplies."},{"id":"biz-049","name":"Maitake Products / Yukiguni Maitake","location":{"city":"Ridgefield Park","state":"NJ"},"website":"https://maitake.com","categories":["medicinal","gourmet"],"online_ordering":true,"description":"US distributor of Japanese-cultivated maitake mushrooms. D-fraction extracts and supplements online and in health food stores."},{"id":"biz-050","name":"Gorilla Mushrooms","location":{"city":"Ann Arbor","state":"MI"},"website":"https://gorilla-mushrooms.com","categories":["gourmet","grow_kits"],"online_ordering":true,"description":"Ann Arbor-based mushroom farm in one of the first Michigan cities to decriminalize psilocybin."}];
+
+const JURISDICTIONS = [{"id":"us-state-oregon","name":"Oregon","type":"state","state":"OR","decrim_type":"therapeutic_regulated","measure":"Measure 109 + Measure 110","date":"2020-11-03","effective_date":"2021-02-01","status":"active","notes":"Measure 109 legalized supervised psilocybin therapy via licensed service centers (adults 21+). ~31 licensed service centers as of 2025."},{"id":"us-state-colorado","name":"Colorado","type":"state","state":"CO","decrim_type":"personal_use_legalized_therapeutic_regulated","measure":"Proposition 122 (Natural Medicine Health Act)","date":"2022-11-08","effective_date":"2023-01-01","status":"active","notes":"Prop 122 decriminalized personal use and sharing for adults 21+. Licensed healing centers opened March 2025."},{"id":"us-city-denver-co","name":"Denver","type":"city","state":"CO","decrim_type":"lowest_priority","measure":"Initiative 301","date":"2019-05-07","effective_date":"2019-05-07","status":"active","notes":"First US city to decriminalize psilocybin (50.6% in favor). Personal use and possession lowest law enforcement priority."},{"id":"us-city-oakland-ca","name":"Oakland","type":"city","state":"CA","decrim_type":"lowest_priority","measure":"City Council Resolution (June 2019)","date":"2019-06-04","effective_date":"2019-06-04","status":"active","notes":"Second US city after Denver. Unanimous vote. Covers psilocybin, peyote, ibogaine, ayahuasca, and mescaline cacti."},{"id":"us-city-santa-cruz-ca","name":"Santa Cruz","type":"city","state":"CA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2020-01-28","effective_date":"2020-01-28","status":"active","notes":"Unanimous vote to decriminalize entheogenic plants and fungi including psilocybin, peyote, and ayahuasca."},{"id":"us-city-ann-arbor-mi","name":"Ann Arbor","type":"city","state":"MI","decrim_type":"lowest_priority","measure":"Resolution File #20-1389","date":"2020-09-21","effective_date":"2020-09-21","status":"active","notes":"Unanimous City Council vote. Declares investigation/arrest for personal use of entheogenic plants lowest priority."},{"id":"us-county-washtenaw-mi","name":"Washtenaw County","type":"county","state":"MI","decrim_type":"prosecutorial_deprioritization","measure":"Policy Directive 2021-06","date":"2021-01-12","effective_date":"2021-01-12","status":"active","notes":"Prosecuting Attorney extended Ann Arbor's entheogenic plant deprioritization countywide."},{"id":"us-city-washington-dc","name":"Washington, D.C.","type":"district","state":"DC","decrim_type":"lowest_priority","measure":"Initiative 81 — Entheogenic Plant and Fungus Policy Act of 2020","date":"2020-11-03","effective_date":"2021-03-15","status":"active","notes":"Passed by 76% of voters. Covers psilocybin, ibogaine, mescaline, and DMT-containing plants."},{"id":"us-city-detroit-mi","name":"Detroit","type":"city","state":"MI","decrim_type":"lowest_priority","measure":"Proposal E","date":"2021-11-02","effective_date":"2021-11-02","status":"active","notes":"Voters approved Proposal E. Personal possession, cultivation, and use of entheogenic plants lowest priority."},{"id":"us-city-seattle-wa","name":"Seattle","type":"city","state":"WA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2021-10-04","effective_date":"2021-10-04","status":"active","notes":"Council passed resolution declaring entheogen activities among Seattle's lowest enforcement priorities."},{"id":"us-city-port-townsend-wa","name":"Port Townsend","type":"city","state":"WA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2021-12-20","effective_date":"2021-12-20","status":"active","notes":"Resolution for low enforcement priority when entheogen activities occur in a nonpublic place."},{"id":"us-city-somerville-ma","name":"Somerville","type":"city","state":"MA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2021-01-01","effective_date":"2021-01-01","status":"active","notes":"First Massachusetts city to decriminalize entheogenic plants. Treats possession as public health matters."},{"id":"us-city-cambridge-ma","name":"Cambridge","type":"city","state":"MA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2021-02-03","effective_date":"2021-02-03","status":"active","notes":"Passed 8-1. Called on Middlesex County DA to cease prosecuting entheogenic plant cases."},{"id":"us-city-northampton-ma","name":"Northampton","type":"city","state":"MA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2021-04-01","effective_date":"2021-04-01","status":"active","notes":"Third Massachusetts city to decriminalize. Treats all drug use/possession as low enforcement priority."},{"id":"us-city-easthampton-ma","name":"Easthampton","type":"city","state":"MA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2021-10-20","effective_date":"2021-10-20","status":"active","notes":"Part of Massachusetts decriminalization wave. Deprioritizes enforcement of psilocybin mushroom laws."},{"id":"us-city-salem-ma","name":"Salem","type":"city","state":"MA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2023-05-01","effective_date":"2023-05-01","status":"active","notes":"Unanimous resolution focused on psilocybin mushrooms. Calls on DA to deprioritize prosecutions."},{"id":"us-city-medford-ma","name":"Medford","type":"city","state":"MA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2024-02-01","effective_date":"2024-02-01","status":"active","notes":"Passed 6-1. Designates growing and sharing psilocybin as lowest enforcement priority, citing therapeutic benefits."},{"id":"us-city-san-francisco-ca","name":"San Francisco","type":"city","state":"CA","decrim_type":"lowest_priority_nonbinding","measure":"Resolution No. 220896","date":"2022-09-06","effective_date":"2022-09-06","status":"active","notes":"Board of Supervisors unanimously passed non-binding resolution urging lowest enforcement priority for entheogenic plants."},{"id":"us-city-berkeley-ca","name":"Berkeley","type":"city","state":"CA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2023-07-11","effective_date":"2023-07-11","status":"active","notes":"Fully decriminalized entheogenic plants and fungi. Excludes artificially synthesized psychedelics."},{"id":"us-city-arcata-ca","name":"Arcata","type":"city","state":"CA","decrim_type":"lowest_priority","measure":"City Council Resolution","date":"2022-01-01","effective_date":"2022-01-01","status":"active","notes":"City Council deprioritized enforcement for psilocybin and other entheogenic plants."}];
+
+// ── DECRIM MAP ──────────────────────────────────────────────────────────
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function renderDecrimMap() {
+  const states = JURISDICTIONS.filter(j => j.type === 'state');
+  const cities = JURISDICTIONS.filter(j => j.type === 'city' || j.type === 'district');
+  const counties = JURISDICTIONS.filter(j => j.type === 'county');
+
+  const container = document.getElementById('decrim-container');
+  let html = '';
+
+  const renderCard = (j) => `
+    <div class="decrim-card">
+      <div class="decrim-card-header">
+        <div>
+          <div class="decrim-name">${j.name}</div>
+          ${j.state && j.type !== 'state' ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">${j.state}</div>` : ''}
+        </div>
+        <span class="status-badge ${j.status}">${j.status}</span>
+      </div>
+      <div class="decrim-measure">📋 ${j.measure}</div>
+      <div class="decrim-date">
+        Passed: ${formatDate(j.date)}
+        ${j.effective_date && j.effective_date !== j.date ? ` · Effective: ${formatDate(j.effective_date)}` : ''}
+      </div>
+      <div class="decrim-notes">${j.notes}</div>
+    </div>`;
+
+  if (states.length) {
+    html += `<div class="group-block"><div class="group-label">🏛 State-Level</div><div class="decrim-grid">${states.map(renderCard).join('')}</div></div>`;
+  }
+  if (cities.length) {
+    html += `<div class="group-block"><div class="group-label">🏙 Cities &amp; Districts</div><div class="decrim-grid">${cities.map(renderCard).join('')}</div></div>`;
+  }
+  if (counties.length) {
+    html += `<div class="group-block"><div class="group-label">🗺 Counties</div><div class="decrim-grid">${counties.map(renderCard).join('')}</div></div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// ── BUSINESS DIRECTORY ──────────────────────────────────────────────────
+const CAT_MAP = { all: 'all', functional: ['functional','medicinal'], gourmet: ['gourmet'], grow_kits: ['grow_kits'], psychedelic: ['psychedelic'] };
+const TAG_LABELS = { medicinal: 'Medicinal', functional: 'Functional', gourmet: 'Gourmet', grow_kits: 'Grow Kits', psychedelic: 'Psilocybin Services' };
+
+let activeCat = 'all';
+let activeState = 'all';
+let searchQuery = '';
+
+function getStates() {
+  const states = new Set();
+  BUSINESSES.forEach(b => { if (b.location && b.location.state) states.add(b.location.state); });
+  return Array.from(states).sort();
+}
+
+function populateStateFilter() {
+  const sel = document.getElementById('state-filter');
+  getStates().forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = s;
+    sel.appendChild(opt);
+  });
+}
+
+function matchesCat(biz) {
+  if (activeCat === 'all') return true;
+  const cats = CAT_MAP[activeCat];
+  if (!cats || cats === 'all') return true;
+  return biz.categories.some(c => cats.includes(c));
+}
+
+function matchesState(biz) {
+  if (activeState === 'all') return true;
+  return biz.location && biz.location.state === activeState;
+}
+
+function matchesSearch(biz) {
+  if (!searchQuery) return true;
+  const q = searchQuery.toLowerCase();
+  return biz.name.toLowerCase().includes(q) ||
+    (biz.location.city || '').toLowerCase().includes(q) ||
+    (biz.location.state || '').toLowerCase().includes(q);
+}
+
+function getDomain(url) {
+  try { return new URL(url).hostname.replace('www.',''); } catch { return url; }
+}
+
+function renderBizCard(b) {
+  const tags = b.categories.map(c => `<span class="tag tag-${c}">${TAG_LABELS[c] || c}</span>`).join('');
+  return `
+    <div class="biz-card">
+      <div class="biz-card-header">
+        <div class="biz-name">${b.name}</div>
+        ${b.online_ordering ? '<span class="online-badge">Online</span>' : ''}
+      </div>
+      <div class="biz-location">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${b.location.city}${b.location.city !== 'Online' ? `, ${b.location.state}` : ''}
+      </div>
+      <div class="biz-tags">${tags}</div>
+      <div class="biz-footer">
+        <a href="${b.website}" target="_blank" rel="noopener" class="biz-link">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          ${getDomain(b.website)}
+        </a>
+      </div>
+    </div>`;
+}
+
+function renderBizGrid() {
+  const grid = document.getElementById('biz-grid');
+  const count = document.getElementById('results-count');
+  const filtered = BUSINESSES.filter(b => matchesCat(b) && matchesState(b) && matchesSearch(b));
+  count.innerHTML = `Showing <span>${filtered.length}</span> of ${BUSINESSES.length} businesses`;
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="no-results"><strong>No results found</strong>Try adjusting your filters or search query.</div>`;
+  } else {
+    grid.innerHTML = filtered.map(renderBizCard).join('');
+  }
+}
+
+// ── EVENT LISTENERS ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderDecrimMap();
+  populateStateFilter();
+  renderBizGrid();
+
+  document.getElementById('cat-filters').addEventListener('click', e => {
+    const btn = e.target.closest('[data-cat]');
+    if (!btn) return;
+    document.querySelectorAll('#cat-filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    renderBizGrid();
+  });
+
+  document.getElementById('state-filter').addEventListener('change', e => {
+    activeState = e.target.value;
+    renderBizGrid();
+  });
+
+  let searchTimer;
+  document.getElementById('search').addEventListener('input', e => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      searchQuery = e.target.value.trim();
+      renderBizGrid();
+    }, 180);
+  });
+});
+</script>
 </body>
 </html>
